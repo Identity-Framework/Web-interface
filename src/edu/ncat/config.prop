@@ -1,0 +1,3 @@
+db=test
+stardog.url=http://localhost
+stardog.port=5820
