@@ -1,0 +1,8 @@
+SELECT 
+#foreach( $var in $varList )
+$var
+#end
+WHERE{
+
+
+}

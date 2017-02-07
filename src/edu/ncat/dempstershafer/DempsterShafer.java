@@ -2,6 +2,8 @@ package edu.ncat.dempstershafer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.python.util.PythonInterpreter;
 
 import edu.ncat.StardogUtilities;
@@ -10,6 +12,7 @@ public abstract class DempsterShafer {
 
 	protected StardogUtilities sdUtil;
 	protected PythonInterpreter interpreter;
+	protected String filename;
 	
 	public DempsterShafer(){
 		try {
@@ -21,8 +24,8 @@ public abstract class DempsterShafer {
 		}
 		
 	}
-	public abstract void prepareOutFile();
+	public abstract void prepareOutFile() throws Exception;
 	
-	public abstract ArrayList runInterpreter();
+	public abstract ArrayList<HashMap<String, DSInfo>> runInterpreter();
 
 }

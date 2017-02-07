@@ -4,12 +4,18 @@
    "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
    <constant name="struts.devMode" value="true" />
-   <package name="helloworld" namespace="/" extends="struts-default">   
+   <package name="helloworld" namespace="/" extends="json-default">   
       <action name="query" 
             class="edu.ncat.struts2.SPARQLAction" 
             method="execute">
             <result name="success">/viewresults.jsp</result>
             <result name="error">/queryError.jsp</result>
+      </action>
+      <action name="" class="" method="execute">
+      	<result type="json">
+      		<param name="excludeNullProperties">true</param>
+        	<param name="noCache">true</param>
+      	</result>
       </action>
    </package>
 </struts>
