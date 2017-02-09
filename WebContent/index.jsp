@@ -37,17 +37,17 @@
 						<option value="3">Scenario 3</option>
 					</select><br />
 					<div class="checkbox">
-						<label><input type="checkbox" name="criteria">Male</label><br />
-						<label><input type="checkbox" name="criteria">Male</label><br />
-						<label><input type="checkbox" name="criteria">Male</label><br />
-						<label><input type="checkbox" name="criteria">Male</label><br />
+						<label><input type="checkbox" name="criteria">the officer who took the fingerprint of the suspect on record</label><br />
+						<label><input type="checkbox" name="criteria">the evidence</label><br />
+						<label><input type="checkbox" name="criteria">IDs</label><br />
+						<label><input type="checkbox" name="criteria">Who lifted the forensic fingerprint</label><br />
 						<label><input type="checkbox" name="criteria">Male</label><br />
 						<label><input type="checkbox" name="criteria">Male</label><br />
 						<label><input type="checkbox" name="criteria">Male</label><br />
 						<label><input type="checkbox" name="criteria">Male</label><br />
 						<label><input type="checkbox" name="criteria">Male</label><br />
 					</div>
-					<input type="submit" class="btn btn-info" value="Submit">
+					<input type="submit" class="btn btn-info" value="Submit" />
 				</form>
 			</div>
 	    </div>

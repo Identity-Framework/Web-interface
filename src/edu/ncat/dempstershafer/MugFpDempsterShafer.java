@@ -6,6 +6,8 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
@@ -304,11 +306,30 @@ public class MugFpDempsterShafer extends DempsterShafer{
 		
 		Scanner scanner = new Scanner(out.toString());
 		
+		Pattern pat = Pattern.compile("([A-Za-z0-9]{,15})\\s+(0\\.\\d{3}|1)\\s+(0\\.\\d{3}|1)");
 		
-
-
+		ArrayList<HashMap<String, DSInfo>> temp = new ArrayList<HashMap<String, DSInfo>>();
 		
-		return null;
+		scanner.nextLine();
+		HashMap<String, DSInfo> hm = new HashMap<String, DSInfo>();
+		
+		while(scanner.hasNext()){
+			
+			Matcher m = pat.matcher(scanner.nextLine());
+			if(m.find()){
+				DSInfo info = new DSInfo();
+				info.setBelief(Double.parseDouble(m.group(1)));
+				info.setPlausiblity(Double.parseDouble(m.group(2)));
+				hm.put(m.group(0), info);
+			}
+			else{
+				temp.add(hm);
+				hm = new HashMap<String, DSInfo>();
+			}
+			
+		}
+		
+		return temp;
 	}
 
 }

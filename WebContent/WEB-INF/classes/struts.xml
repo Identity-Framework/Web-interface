@@ -11,11 +11,14 @@
             <result name="success">/viewresults.jsp</result>
             <result name="error">/queryError.jsp</result>
       </action>
-      <action name="" class="" method="execute">
+      <action name="description" class="edu.ncat.struts2.ScenarioDescriptionAction" method="execute">
       	<result type="json">
       		<param name="excludeNullProperties">true</param>
         	<param name="noCache">true</param>
       	</result>
+      </action>
+      <action name="evidence" class="edu.ncat.struts2.DempsterShaferAction" method="execute">
+      	<result name="success">/viewEvidence.jsp</result>
       </action>
    </package>
 </struts>
