@@ -1,6 +1,8 @@
 package edu.ncat.dempstershafer;
 
-public class DSInfo {
+import java.io.Serializable;
+
+public class DSInfo implements Serializable{
 	private double belief;
 	private double plausiblity;
 	public double getBelief() {

@@ -1,0 +1,3 @@
+for $x in doc("ev.xml")/evidence/DempsterShafer
+where $x[scenario=$ID]
+return data($x/modality)

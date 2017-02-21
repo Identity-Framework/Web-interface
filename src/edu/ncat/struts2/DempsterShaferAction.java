@@ -38,13 +38,7 @@ public class DempsterShaferAction extends ActionSupport{
 	    XQPreparedExpression exp = conn.prepareExpression(is);
 	    XQResultSequence result = exp.executeQuery();
 	    
-	    String classname = result.getItemAsString(null);
 	    
-	    Class temp = Class.forName(classname);
-	    
-	    DempsterShafer dempster = (DempsterShafer) temp.newInstance();
-	    dempster.prepareOutFile();
-	    this.setInfo(dempster.runInterpreter());
 	    
 	    return this.SUCCESS;
 	    

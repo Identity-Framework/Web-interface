@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://esterline.ncat.edu/webInterface">
+	<xs:element name="DempsterShafer">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="modality" type="xs:string"/>
+			</xs:sequence>
+			<xs:attribute name="scenario" type="xs:integer"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Modality">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="prepareCode" type="xs:string"/>
+				<xs:element name="massModifyCode" type="xs:string"/>
+			</xs:sequence>
+			<xs:attribute name="type" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
