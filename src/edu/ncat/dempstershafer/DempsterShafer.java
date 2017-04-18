@@ -1,166 +1,203 @@
 package edu.ncat.dempstershafer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Set;
 
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.python.core.PyDictionary;
+import org.python.core.PyFloat;
 import org.python.core.PyObject;
 import org.python.core.PyString;
+import org.python.core.PyTuple;
 import org.python.util.PythonInterpreter;
-
-import com.github.andrewoma.dexx.collection.Function;
-import com.itranswarp.compiler.JavaStringCompiler;
 
 import edu.ncat.StardogUtilities;
 import edu.ncat.VelocityUtils;
-import pl.joegreen.lambdaFromString.LambdaCreationException;
-import pl.joegreen.lambdaFromString.LambdaFactory;
-import pl.joegreen.lambdaFromString.TypeReference;
 
-public class DempsterShafer implements Runnable{
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+/**
+ * This class provides the mechanisms for dempster-shafer theory. 
+ * 
+ * @author William Nick
+ *
+ */
+
+
+public class DempsterShafer{
 
 	private PythonInterpreter interpreter;
-	private String filename;
 	private ClassLoader classLoader;
-	private LambdaFactory lambdaFactory;
-	private Function<Double, Double> massFunc;
 	private HashMap<String, Double> mass;
-	private int threshold;
-	private Method[] methods;
+	private StardogUtilities sdUtil;
+	
+	/**
+	 * Initalizes the neccessary classes required for dempster-shafer
+	 * @throws IOException
+	 */
 	
 	public DempsterShafer() throws IOException{
-		lambdaFactory = LambdaFactory.get();
 		interpreter = new PythonInterpreter();
 		classLoader = getClass().getClassLoader();
-		interpreter.execfile(classLoader.getResource("ds1.py").getFile());
+		sdUtil = new StardogUtilities();
+		interpreter.execfile(classLoader.getResourceAsStream("/edu/ncat/dempstershafer/ds1.py"));
 	}
 
-	public String getFilename() {
-		return filename;
-	}
 
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
-	
-	public void setMassFunction(String mFunc) throws LambdaCreationException{
-		lambdaFactory = LambdaFactory.get();
-		massFunc = lambdaFactory.createLambda(mFunc, new TypeReference<Function<Double, Double>>(){});
-	}
-	
-	public void prepareData(String prepCode, String modCode) throws ClassNotFoundException, IOException{
-		JavaStringCompiler jdkCompiler = new JavaStringCompiler();
-		VelocityUtils vuProg = new VelocityUtils(classLoader.getResource("dsPrepCode.vm").getFile()); 
-		
-		HashMap<String, Object> obj = new HashMap<String, Object>();
-		obj.put("prepcode", prepCode);
-		obj.put("modcode", modCode);
-		
-		vuProg.setupTemplate(obj);
-		
-		Map<String, byte[]> results = jdkCompiler.compile("DempsterShaferUtils.java", vuProg.toString());
-        Class<?> clazz = jdkCompiler.loadClass("edu.ncat.dempstershafer.DempsterShaferUtils", results);
-        
-        methods = clazz.getMethods();
-        
-	}
 
-	@Override
-	public void run() {
-		if(new File(filename).exists()){
-			return;
-		}
-		try {
-			mass = (HashMap<String, Double>) methods[0].invoke(null, null);
-			double total = 0;
-			for(String key: mass.keySet()){
-				if(mass.get(key) > getThreshold()){
-					mass.put(key, 0.0);
-				}
-				else{
-					mass.put(key, massFunc.invoke(mass.get(key)));
-				}
-				total+=mass.get(key);
+	/**
+	 * 
+	 * @param threshold
+	 * @param qString
+	 */
+	public void createMasses(double threshold, String qString){
+		setMass(new HashMap<String, Double>());
+		ResultSet rs = sdUtil.query(qString, false);
+		double total = 0.0;
+		
+		while(rs.hasNext()){
+		//
+			QuerySolution sol = rs.nextSolution();
+			String id = sol.get("?num").toString().split("#")[1];
+			double sim = Double.valueOf(sol.get("?sim").toString());
+			//
+			if(sim > threshold){
+				sim = 0.0;
+				mass.put(id, sim);
 			}
-			if (total>1){
-				for(String key: mass.keySet()){
-					mass.put(key, mass.get(key)/total );
-				}
-			}
-			
+			//
 			else{
-				mass.put("All", 1.0 - total);
+				sim = 1/(1+Math.pow(Math.E, -8*(threshold*1-sim)));
+				mass.put(id, sim);
 			}
-			
-			mass = (HashMap<String, Double>) methods[1].invoke(null, mass);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			total+=sim;
 		}
-		PrintWriter fout = null;
-		
-		try {
-			fout = new PrintWriter(filename);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		mass.put("All", 0.0);
+		//if the total mass is greater 
+		if(total > 1.0){
+			for(String ID:mass.keySet()){
+				mass.put(ID, mass.get(ID)/total);
+			}
 		}
-		for(String key: mass.keySet()){
-			fout.print(key);
-			fout.print("\t");
-			fout.print(String.format("%.3f", mass.get(key)));
+		//
+		else{
+			mass.put("All", 1-total);
 		}
-		fout.close();
 		
 	}
 	
-	public HashMap<String, DSInfo> runInterpreter(){
-		StringWriter out = new StringWriter();
-		interpreter.setOut(out);
+	public void modifyMass(String templateFilename){
+		HashSet<String> IDs = new HashSet<String>(mass.keySet());
+		IDs.remove("All");
+		double all = mass.get("All");
+		for(String ID: IDs){
+			VelocityUtils template = new VelocityUtils(templateFilename);
+			HashMap<String, Object> temp = new HashMap<String, Object>();
+			temp.put("idNum", ID);
+			template.setupTemplate(temp);
+			ResultSet rs = sdUtil.query(template.toString(), false);
+			while(rs.hasNext()){
+				QuerySolution sol = rs.nextSolution();
+				double mult = Double.valueOf(sol.get("?rel").toString());
+				double m = mass.get(ID);
+				mass.put(ID, (m * mult));
+				all += m * (1 - mult);
+				
+			}
+		}
+		mass.put("All", all);
+	}
+	
+	public Map<String, Map<String, Double>> calculateBelAndPlaus(){
+		PyDictionary masses = hashmapToDictionary();
 		
-		PyObject makeMass = interpreter.get("make_mass");
 		PyObject outMeasures = interpreter.get("out_measures");
+		PyObject data = outMeasures.__call__(masses);
 		
-		PyObject mass = makeMass.__call__(new PyString(filename));
-		PyObject printData = outMeasures.__call__(mass);
+		Map<String, Map<String, Double>> map = null;
 		
-		Scanner scanner = new Scanner(out.toString());
+		if(data instanceof PyString){
+			ObjectMapper mapper = new ObjectMapper();
+			map = new HashMap<String, Map<String, Double>>();
+			try {
+				map = mapper.readValue(data.asString(), new TypeReference<Map<String, Map<String, Double>>>(){});
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
-		Pattern pat = Pattern.compile("([A-Za-z0-9]{,15})\\s+(0\\.\\d{3}|1)\\s+(0\\.\\d{3}|1)");
+		return map;
 		
-		scanner.nextLine();
-		HashMap<String, DSInfo> hm = new HashMap<String, DSInfo>();
-		
-		while(scanner.hasNext()){
-			Matcher m = pat.matcher(scanner.nextLine());
-			if(m.find()){
-				DSInfo info = new DSInfo();
-				info.setBelief(Double.parseDouble(m.group(1)));
-				info.setPlausiblity(Double.parseDouble(m.group(2)));
-				hm.put(m.group(0), info);
+	}
+	
+	
+
+	public HashMap<String, Double> getMass() {
+		return mass;
+	}
+
+	public void setMass(HashMap<String, Double> mass) {
+		this.mass = mass;
+	}
+	
+	private PyDictionary hashmapToDictionary(){
+		PyDictionary masses = new PyDictionary();
+		for(String ID: mass.keySet()){
+			if(!ID.equals("All")){
+				PyObject newID = new PyTuple(new PyObject[]{new PyString(ID)});
+				PyObject mass1 = new PyFloat(mass.get(ID).doubleValue());
+				masses.put(newID, mass1);
+			}
+			else{
+				PyObject newID = new PyString(ID);
+				PyObject mass1 = new PyFloat(mass.get(ID).doubleValue());
+				masses.put(newID, mass1);
 			}
 			
 		}
-		return hm;
-	}
-
-	public int getThreshold() {
-		return threshold;
-	}
-
-	public void setThreshold(int threshold) {
-		this.threshold = threshold;
+		return masses;
 	}
 	
+	
+	public Map<String, Map<String, Double>> combine(String RuleID, DempsterShafer demp, double...rel ){
+		PyObject mass1 = hashmapToDictionary();
+		PyObject mass2 = demp.hashmapToDictionary();
+		PyObject newMass = null;
+		PyObject com;
+		
+		switch(RuleID){
+			case "dem":
+				com = interpreter.get("combine");
+				newMass = com.__call__(mass1, mass2);
+				break;
+			case "yag":
+				com = interpreter.get("yager_combine");
+				newMass = com.__call__(mass1, mass2);
+				break;
+		}
+		
+		PyObject outMeasures = interpreter.get("out_measures");
+		PyObject data = outMeasures.__call__(newMass);
+		
+		Map<String, Map<String, Double>> map = null;
+		
+		if(data instanceof PyString){
+			ObjectMapper mapper = new ObjectMapper();
+			map = new HashMap<String, Map<String, Double>>();
+			try {
+				map = mapper.readValue(data.toString(), new TypeReference<Map<String, Map<String, Double>>>(){});
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return map;
+	}
 
 }

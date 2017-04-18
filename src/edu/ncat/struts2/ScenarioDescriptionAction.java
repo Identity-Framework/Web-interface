@@ -17,6 +17,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.saxonica.xqj.SaxonXQDataSource;
 
 import edu.ncat.VelocityUtils;
+import edu.ncat.XQueryUtilities;
 
 public class ScenarioDescriptionAction extends ActionSupport{
 	private int scenarioID;
@@ -32,18 +33,13 @@ public class ScenarioDescriptionAction extends ActionSupport{
 	
 	public String execute() throws XQException, IOException{
 		stateMap = new LinkedHashMap<String, String>();
-		ClassLoader classLoader = getClass().getClassLoader();
-		VelocityUtils veXquery = new VelocityUtils(classLoader.getResource("sDescription.vm").getFile());
-		HashMap<String, Object> tm = new HashMap<String, Object>();
-		tm.put("sID", new Integer(scenarioID));
-		veXquery.setupTemplate(tm);
-		String xQueryStr = veXquery.toString();
-		InputStream is = new ByteArrayInputStream(xQueryStr.getBytes());
 		
-	    XQDataSource ds = new SaxonXQDataSource();
-	    XQConnection conn = ds.getConnection();
-	    XQPreparedExpression exp = conn.prepareExpression(is);
-	    XQResultSequence result = exp.executeQuery();
+		ClassLoader classLoader = getClass().getClassLoader();
+		
+		XQueryUtilities xquSusDescription = new XQueryUtilities("sDescription.xq");
+		xquSusDescription.prepareQuery(classLoader.getResource("/edu/ncat/resources").toString(), "scenario.xml");
+		xquSusDescription.addVariable("sID", new Integer(scenarioID));
+	    XQResultSequence result = xquSusDescription.executeQuery();
 	    
 	    if(result.next()){
 	    	stateMap.put("Description", result.getItemAsString(null));

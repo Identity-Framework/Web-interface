@@ -4,21 +4,49 @@
    "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
    <constant name="struts.devMode" value="true" />
-   <package name="helloworld" namespace="/" extends="json-default">   
-      <action name="query" 
-            class="edu.ncat.struts2.SPARQLAction" 
-            method="execute">
-            <result name="success">/viewresults.jsp</result>
-            <result name="error">/queryError.jsp</result>
+   <package name="helloworld" namespace="/" extends="json-default">
+      <default-action-ref name="index" />
+      
+      <action name="index" class="edu.ncat.struts2.IndexAction" method="populate">
+      	<result name="success">/user_main.jsp</result>
       </action>
+   
       <action name="description" class="edu.ncat.struts2.ScenarioDescriptionAction" method="execute">
       	<result type="json">
       		<param name="excludeNullProperties">true</param>
         	<param name="noCache">true</param>
       	</result>
       </action>
-      <action name="evidence" class="edu.ncat.struts2.DempsterShaferAction" method="execute">
+      
+      <action name="modality" class="edu.ncat.struts2.DempsterShaferAction" method="execute">
+      	<result type="json">
+      		<param name="excludeNullProperties">true</param>
+        	<param name="noCache">true</param>
+      	</result>
+      </action>
+      
+      <action name="suspectInfo" class="edu.ncat.struts2.SuspectInfoAction" method="execute">
+      	<result type="json">
+      		<param name="excludeNullProperties">true</param>
+        	<param name="noCache">true</param>
+      	</result>
+      </action>
+      
+      <action name="evidence" class="edu.ncat.struts2.DSInfoAction" method="populate">
       	<result name="success">/viewEvidence.jsp</result>
       </action>
+      
+      <action name="massModInfo" class="edu.ncat.struts2.MassModAction" method="execute">
+      	<result name="success">/massmodinfo.jsp</result>
+      </action>
+      
+      <action name="modify" class="edu.ncat.struts2.ModifyAction" method="execute">
+      	<result type="json">
+      		<param name="excludeNullProperties">true</param>
+        	<param name="noCache">true</param>
+      	</result>
+      </action>
+      
+      
    </package>
 </struts>

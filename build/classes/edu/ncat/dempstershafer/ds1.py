@@ -6,6 +6,7 @@ Created on Tue Dec 29 12:43:50 2015
 """
 import re
 import copy
+import json
 
 p = re.compile(r'(\{.+\}|\w+)\s+(\d\.\d+)\s*')
 p_split = re.compile(r',\s*')
@@ -138,10 +139,14 @@ def make_mass(f_name):
 #Prints out a table of mass, belief, plausibility information about a given
 #   dictionary of focal sets and masses
 def out_measures(mass):
-    print "Focal element   Mass  Belief  Plausibility"
+    data = {}
     for names, val in mass.iteritems():
-        print "{:15s} {:.3f}  {:.3f}  {:.3f}".\
-           format(to_set_str(names), val, Bel(names, mass), Plaus(names, mass))
+        name = to_set_str(names)
+        data[name]={'mass': val, 'belief': Bel(names, mass), 'plaus': Plaus(names, mass)}
+    return json.dumps(data)
+	
+        
+           
 
 #######NOTE: CURRENTLY ONLY WORKS FOR ONE ELEMENT SETS
 #probably could be fixed by not using extract_tuple
@@ -297,40 +302,3 @@ def zhang_combine(mass1, mass2):
     for n in mass3.keys():
         mass3[n]/=k
     return mass3
-
-##mass1 = make_mass('fp_mass.txt')
-###This should always be 1: sum of all the masses input
-##print "The sum is %.3f" % sum(mass1.values())
-##print "Information from fingerprint data"
-##out_measures(mass1)
-##while True:
-##    in_str = raw_input("Values for another set (y/n)? ")
-##    if in_str.lower()[0] == 'n':
-##        break
-##    interact(mass1)
-##
-##mass2 = make_mass('mug_mass.txt')
-##print "The sum is %.3f" % sum(mass2.values())
-##print "Information from mug shots"
-##out_measures(mass2)
-##while True:
-##    in_str = raw_input("Values for another set (y/n)? ")
-##    if in_str.lower()[0] == 'n':
-##        break
-##    interact(mass2)
-##
-##mass3 = combine(mass1, mass2)
-##print "The sum is %.3f" % sum(mass3.values())
-##print "Combined mass data (using Dempster's Rule)"
-##out_measures(mass3)
-##while True:
-##    in_str = raw_input("Values for another set (y/n)? ")
-##    if in_str.lower()[0] == 'n':
-##        break
-##    interact(mass3)
-##    
-##mass4 = yager_combine(mass1, mass2)
-##print "The sum is %.3f" % sum(mass4.values())
-##print "Combined mass data (using Yager's Rule)"
-##out_measures(mass4)
-##

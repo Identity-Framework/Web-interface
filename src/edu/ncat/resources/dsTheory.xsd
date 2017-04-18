@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://esterline.ncat.edu/webInterface">
+	<xs:element name="DempsterShaferTheory">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="DSInstance">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="EvidenceModality">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="queryString" type="xs:string" />
+										<xs:element name="massModificationTemplate">
+											<xs:complexType>
+													<xs:sequence>
+														<xs:element name="filename" type="xs:string" />
+														<xs:element name="modificationText" type="xs:string"/>
+													</xs:sequence>
+												<xs:attribute name="ID" type="xs:integer"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="threshold" type="xs:integer"/>
+									</xs:sequence>
+									<xs:attribute name="type" type="xs:string"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="scenarioID" type="xs:integer"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

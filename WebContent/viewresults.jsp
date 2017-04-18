@@ -15,25 +15,17 @@
 		<h1>Cafreci Web Interface</h1>
 	</div>
 	<div class="container">
-		<table class="table table-condensed">
-			<thead>
-				<tr>
-					<s:iterator value="variables">
-						<th><s:property/></th>
-					</s:iterator>
-				</tr>
-			</thead>
-			<tbody>
-				<s:iterator value="qResults" >     
-	             	<tr>
-	                        <s:iterator>
-	                            <td><s:property value="value"/></td>
-	                        </s:iterator>
-	                 </tr>
-	                    
-	                </s:iterator>
-	               </tbody>
-		</table>
+		<div class="row">
+			<div class="col-sm-6">
+				<h3>Scenario</h3>
+				<p><s:property value="scenarioText"/></p>
+			
+			</div>
+			<div class="col-sm-6">
+				<table class="table table-condensed">
+				</table>
+			</div>
+		</div>
 	</div>
 </body>
 </html>

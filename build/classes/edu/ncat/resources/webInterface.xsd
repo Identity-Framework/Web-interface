@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://esterline.ncat.edu/webInterface.xsd">
+	<xs:element name="Scenarios">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Scenario">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="name" type="xs:string" />
+							<xs:element name="description" type="xs:string"/>
+							<xs:element name="Suspects">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Suspect">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="suspectID" type="xs:integer"/>
+													<xs:element name="suspectName" type="xs:string"/>
+													<xs:element name="suspectQuery" type="xs:string" />
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="queries">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="SPARQLquery">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="questions" type="xs:string"/>
+													<xs:element name="template" type="xs:string" />
+												</xs:sequence>
+												<xs:attribute name="id" type="xs:integer"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="mod" type="xs:string" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="id" type="xs:integer" />
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

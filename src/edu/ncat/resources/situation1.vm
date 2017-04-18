@@ -1,0 +1,13 @@
+PREFIX sitterms: <http://esterline.ncat.edu/identity#>
+PREFIX lawterms: <http://esterline.ncat.edu/lawenforcement#>
+PREFIX biom: <http://esterline.ncat.edu/biometric#>
+PREFIX recterms: <http://esterline.ncat.edu/personalrecords#>
+PREFIX insys: <http://esterline.ncat.edu/insystem#>
+SELECT ?rel ?fp
+WHERE { 
+	insys:$idNum  recterms:hasRecord ?rec .
+	?rec biom:hasFpImage ?fp .
+	?infon sitterms:fpRecorded ?fp .
+	?infon sitterms:fpAnalyst ?officer .
+	?officer lawterms:Reliability ?rel .
+}

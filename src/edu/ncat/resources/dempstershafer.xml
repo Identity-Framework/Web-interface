@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DempsterShaferTheory xmlns="http://esterline.ncat.edu/dsTheory.xsd"> 
+	<DSInstance scenarioID="1">
+		<EvidenceModality type="fp">
+			<queryString>
+						PREFIX sitterms: &lt;http://esterline.ncat.edu/identity#&gt;
+						PREFIX biom: &lt;http://esterline.ncat.edu/biometric#&gt;
+						PREFIX recterms: &lt;http://esterline.ncat.edu/personalrecords#&gt;
+						SELECT ?num ?sim
+						WHERE { 
+							?infon sitterms:simMeasure ?sim .
+							?infon sitterms:fpRecorded ?fp .
+							?rec biom:hasFpImage ?fp .
+							?num recterms:hasRecord ?rec .
+						}			
+			</queryString>
+			<massModificationTemplate id="1">
+				<modificationText>
+				
+				</modificationText>
+				<filename>situation1.vm</filename>
+			</massModificationTemplate>
+			<massModificationTemplate id="2">
+				<modificationText>
+				
+				</modificationText>
+				<filename>situation3.vm</filename>
+			</massModificationTemplate>
+			<threshold>0.65</threshold>
+		</EvidenceModality>
+		<EvidenceModality type="mug">
+			<queryString>
+				PREFIX sitterms: &lt;http://esterline.ncat.edu/identity#&gt;
+				PREFIX biom: &lt;http://esterline.ncat.edu/biometric#&gt;
+				PREFIX recterms: &lt;http://esterline.ncat.edu/personalrecords#&gt;
+				
+			
+			</queryString>
+		</EvidenceModality>
+	</DSInstance>
+</DempsterShaferTheory>

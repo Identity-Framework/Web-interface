@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scenarios xmlns="http://http://esterline.ncat.edu/webInterface.xsd">
+	<Scenario id="1">
+		<name>Scenario 1</name>
+		<description>We consider a legal case in which a theft has occurred immediately following a party, providing a list of possible suspects in the form of a guest list. Evidence from the crime scene reveals a group photograph from a security camera with one guest with their hand on the door where the valuables were kept and a fingerprint from that same door. This case can be describe as a constellation of situations, centering around two separate id -situations for the two pieces of evidence: fingerprint and the snapshot.</description>	
+		<Suspects>
+			<Suspect>
+				<suspectID>201</suspectID>
+				<suspectName>Rod Stewart</suspectName>
+				<suspectQuery>
+					
+				</suspectQuery>
+			</Suspect>
+			<Suspect>
+				<suspectID>202</suspectID>
+				<suspectName>Robert Smith</suspectName>
+				<suspectQuery>
+					
+				</suspectQuery>
+			</Suspect>
+			<Suspect>
+				<suspectID>203</suspectID>
+				<suspectName>Jane Doe</suspectName>
+				<suspectQuery>
+					
+				</suspectQuery>
+			</Suspect>
+			<Suspect>
+				<suspectID>204</suspectID>
+				<suspectName>Rebecca Smith</suspectName>
+				<suspectQuery>
+					
+				</suspectQuery>
+			</Suspect>	
+		</Suspects>
+		<queries mod="fp">
+			<SPARQLquery id="1">
+				<question>What is the evidence?</question>
+				<template>
+				
+				</template>
+			</SPARQLquery>
+			<SPARQLquery id="2">
+				<question>Id of person of interest</question>
+				<template>
+				
+				</template>
+			</SPARQLquery>
+			<SPARQLquery id="3">
+				<question>Id of officer (and then look up their name)</question>
+				<template>
+				
+				</template>
+			</SPARQLquery>
+			<SPARQLquery id="4">
+				<question>Id number of the fingerprint</question>
+				<template>
+				
+				</template>
+			</SPARQLquery>
+		</queries>
+		<queries mod="mug">
+		
+		
+		</queries>
+	</Scenario>
+</Scenarios>
